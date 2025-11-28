@@ -13,3 +13,19 @@ app_license = "MIT"
 app_include_js = [
     "customer_statement/public/js/customer_statement.js"
 ]
+
+# Fixtures - Client Scripts and Workspaces
+fixtures = [
+    {
+        "doctype": "Client Script",
+        "filters": {
+            "name": "Customer Statement Button"
+        }
+    },
+    {
+        "doctype": "Workspace",
+        "filters": {
+            "name": "Accounting"
+        }
+    }
+]
