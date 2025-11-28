@@ -55,8 +55,8 @@ def get_customer_statement(customer, from_date=None, to_date=None):
         })
 
     aging = calculate_aging(customer, to_date)
-
-    return {
+    
+    final_data = {
         "customer": {
             "name": customer_doc.name,
             "customer_name": customer_doc.customer_name,
@@ -69,6 +69,24 @@ def get_customer_statement(customer, from_date=None, to_date=None):
         "statement_no": frappe.generate_hash(length=6),
         "statement_date": nowdate(),
     }
+
+    # --- Temporary HTML for testing PDF rendering ---
+    html_content = f"""
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+            <h2 style="border-bottom: 2px solid #ccc; padding-bottom: 5px;">Customer Statement (Test Print)</h2>
+            <p><strong>Customer:</strong> {final_data['customer']['customer_name']}</p>
+            <p><strong>Statement Date:</strong> {final_data['statement_date']}</p>
+            <p style="font-size: 1.2em; font-weight: bold; color: #007bff;">
+                TEST RESULT: Ending Balance is {frappe.format(final_data['ending_balance'], dict(fieldtype='Currency'))}
+            </p>
+            <p style="margin-top: 20px;">
+                If you see this, the server-side method call was successful.
+            </p>
+        </div>
+    """
+    
+    # Return a dictionary that includes the HTML content for the client script to render.
+    return {"html_content": html_content, "data": final_data}
 
 
 def execute(filters=None):
