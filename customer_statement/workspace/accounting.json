@@ -1,14 +1,43 @@
 {
-  "label": "Accounting",
-  "icon": "octicon octicon-repo",
-  "sequence_id": 1,
-  "shortcuts": [
+ "label": "Accounting",
+ "icon": "file-text",
+ "sequence_id": 1,
+ "links": [
+  {
+   "link_type": "DocType",
+   "type": "List",
+   "label": "Customers",
+   "link_to": "Customer"
+  },
+  {
+   "link_type": "DocType",
+   "type": "List",
+   "label": "GL Entries",
+   "link_to": "GL Entry"
+  }
+ ],
+ "shortcuts": [
+  {
+   "type": "DocType",
+   "label": "New Sales Invoice",
+   "link_to": "Sales Invoice"
+  },
+  {
+   "type": "DocType",
+   "label": "New Payment Entry",
+   "link_to": "Payment Entry"
+  }
+ ],
+ "cards": [
+  {
+   "label": "Custom Reports",
+   "links": [
     {
-      "type": "Report",
-      "label": "Customer Statement",
-      "name": "Customer Statement",
-      "doctype": "GL Entry",
-      "is_query_report": true
+     "link_type": "Report",
+     "label": "Customer Statement",
+     "link_to": "Customer Statement"
     }
-  ]
+   ]
+  }
+ ]
 }
