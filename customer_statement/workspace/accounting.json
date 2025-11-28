@@ -1,7 +1,9 @@
 {
+ "name": "Accounting",
  "label": "Accounting",
  "icon": "file-text",
  "sequence_id": 1,
+ "module": "Accounts",
  "links": [
   {
    "link_type": "DocType",

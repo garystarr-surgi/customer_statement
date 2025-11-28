@@ -1,4 +1,4 @@
 include MANIFEST.in
 include setup.py
 include apps.txt
-recursive-include customer_stateement *.py *.json *.html *.css *.js
+recursive-include customer_statement *.py *.json *.html *.css *.js

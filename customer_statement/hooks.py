@@ -8,3 +8,8 @@ app_icon = "octicon octicon-file-directory"
 app_color = "grey"
 app_email = "gary.starr@surgishop.com"
 app_license = "MIT"
+
+# Client scripts for reports
+app_include_js = [
+    "customer_statement/public/js/customer_statement.js"
+]
