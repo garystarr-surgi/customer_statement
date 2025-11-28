@@ -9,12 +9,8 @@ app_color = "grey"
 app_email = "gary.starr@surgishop.com"
 app_license = "MIT"
 
-# Client scripts - loaded on all pages
-app_include_js = [
-    "customer_statement/public/js/customer_statement_client.js"
-]
-
 # Fixtures - Workspaces (for report link in workspace)
+# Note: Client Script is managed via Client Script doctype in Frappe Cloud, not via app_include_js
 fixtures = [
     {
         "doctype": "Workspace",
