@@ -1,47 +1,60 @@
 import frappe
-from frappe import _
+from frappe.utils import nowdate, getdate, flt
 
 def execute(filters=None):
-    columns = [
-        {"label": _("Date"), "fieldname": "date", "fieldtype": "Date", "width": 100},
-        {"label": _("Description"), "fieldname": "description", "fieldtype": "Data", "width": 250},
-        {"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 120},
-        {"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 120},
-    ]
+    customer = filters.get("customer")
+    from_date = filters.get("start_date") or "2000-01-01"
+    to_date = filters.get("end_date") or nowdate()
 
-    data = []
+    from_date = getdate(from_date)
+    to_date = getdate(to_date)
 
-    # Balance Forward
-    balance_forward = frappe.db.sql("""
-        SELECT COALESCE(SUM(debit) - SUM(credit), 0)
+    # Opening balance
+    opening_balance = frappe.db.sql("""
+        SELECT SUM(debit) - SUM(credit)
         FROM `tabGL Entry`
-        WHERE party=%s AND posting_date < %s AND is_cancelled=0
-    """, (filters.get("customer"), filters.get("start_date")))[0][0]
+        WHERE party_type = 'Customer'
+          AND party = %s
+          AND posting_date < %s
+    """, (customer, from_date))[0][0] or 0
 
-    data.append({
-        "date": filters.get("start_date"),
+    running_balance = opening_balance
+    rows = [{
+        "date": from_date,
         "description": "Balance Forward",
-        "amount": 0,
-        "balance": balance_forward
-    })
+        "amount": opening_balance,
+        "balance": running_balance
+    }]
 
-    # Transactions
-    transactions = frappe.db.sql("""
-        SELECT posting_date, voucher_type, voucher_no, debit, credit
-        FROM `tabGL Entry`
-        WHERE party=%s AND posting_date BETWEEN %s AND %s AND is_cancelled=0
-        ORDER BY posting_date ASC, creation ASC
-    """, (filters.get("customer"), filters.get("start_date"), filters.get("end_date")), as_dict=True)
+    # GL Entries
+    gl_entries = frappe.db.get_list(
+        "GL Entry",
+        filters={
+            "party_type": "Customer",
+            "party": customer,
+            "posting_date": ["between", [from_date, to_date]],
+        },
+        fields=["posting_date", "voucher_type", "voucher_no", "debit", "credit", "remarks"],
+        order_by="posting_date asc, creation asc",
+    )
 
-    running_balance = balance_forward
-    for t in transactions:
-        amount = t["debit"] - t["credit"]
+    for entry in gl_entries:
+        amount = flt(entry.debit) - flt(entry.credit)
         running_balance += amount
-        data.append({
-            "date": t["posting_date"],
-            "description": f"{t['voucher_type']} {t['voucher_no']}",
+        desc = build_description(entry)
+        rows.append({
+            "date": entry.posting_date,
+            "description": desc,
             "amount": amount,
             "balance": running_balance
         })
 
-    return columns, data
+    # Return columns + data for the report UI
+    columns = [
+        {"label": "Date", "fieldname": "date", "fieldtype": "Date", "width": 100},
+        {"label": "Description", "fieldname": "description", "fieldtype": "Data", "width": 250},
+        {"label": "Amount", "fieldname": "amount", "fieldtype": "Currency", "width": 120},
+        {"label": "Balance", "fieldname": "balance", "fieldtype": "Currency", "width": 120},
+    ]
+
+    return columns, rows
