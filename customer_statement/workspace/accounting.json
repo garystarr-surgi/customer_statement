@@ -1,0 +1,14 @@
+{
+  "label": "Accounting",
+  "icon": "octicon octicon-repo",
+  "sequence_id": 1,
+  "shortcuts": [
+    {
+      "type": "Report",
+      "label": "Customer Statement",
+      "name": "Customer Statement",
+      "doctype": "GL Entry",
+      "is_query_report": true
+    }
+  ]
+}
