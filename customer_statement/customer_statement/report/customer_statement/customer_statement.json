@@ -1,0 +1,54 @@
+{
+  "report_name": "Customer Statement",
+  "doctype": "GL Entry",
+  "is_standard": "Yes",
+  "report_type": "Script Report",
+  "module": "Accounts",
+  "filters": [
+    {
+      "fieldname": "customer",
+      "label": "Customer",
+      "fieldtype": "Link",
+      "options": "Customer",
+      "reqd": 1
+    },
+    {
+      "fieldname": "start_date",
+      "label": "Start Date",
+      "fieldtype": "Date",
+      "reqd": 1
+    },
+    {
+      "fieldname": "end_date",
+      "label": "End Date",
+      "fieldtype": "Date",
+      "reqd": 1
+    }
+  ],
+  "columns": [
+    {
+      "label": "Date",
+      "fieldname": "date",
+      "fieldtype": "Date",
+      "width": 100
+    },
+    {
+      "label": "Description",
+      "fieldname": "description",
+      "fieldtype": "Data",
+      "width": 250
+    },
+    {
+      "label": "Amount",
+      "fieldname": "amount",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "Balance",
+      "fieldname": "balance",
+      "fieldtype": "Currency",
+      "width": 120
+    }
+  ]
+}
