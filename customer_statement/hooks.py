@@ -1,0 +1,10 @@
+from . import __version__ as app_version
+
+app_name = "customer_statement"
+app_title = "Customer Statement"
+app_publisher = "SurgiShop"
+app_description = "Accounting Customer Statement Report"
+app_icon = "octicon octicon-file-directory"
+app_color = "grey"
+app_email = "gary.starr@surgishop.com"
+app_license = "MIT"
