@@ -50,5 +50,43 @@
       "fieldtype": "Currency",
       "width": 120
     }
+  ],
+  "summary_columns": [
+    {
+      "label": "Current Due",
+      "fieldname": "current_due",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "1-30 Days Past Due",
+      "fieldname": "one_thirty_days",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "31-60 Days Past Due",
+      "fieldname": "thirty_sixty_days",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "61-90 Days Past Due",
+      "fieldname": "sixty_ninety_days",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "90+ Days Past Due",
+      "fieldname": "ninety_plus_days",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "Total Due",
+      "fieldname": "total_due",
+      "fieldtype": "Currency",
+      "width": 120
+    }
   ]
 }
