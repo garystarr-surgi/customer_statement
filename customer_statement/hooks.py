@@ -9,19 +9,13 @@ app_color = "grey"
 app_email = "gary.starr@surgishop.com"
 app_license = "MIT"
 
-# Client scripts for reports
+# Client scripts - loaded on all pages
 app_include_js = [
-    "customer_statement/public/js/customer_statement.js"
+    "customer_statement/public/js/customer_statement_client.js"
 ]
 
-# Fixtures - Client Scripts and Workspaces
+# Fixtures - Workspaces (for report link in workspace)
 fixtures = [
-    {
-        "doctype": "Client Script",
-        "filters": {
-            "name": "Customer Statement Button"
-        }
-    },
     {
         "doctype": "Workspace",
         "filters": {
