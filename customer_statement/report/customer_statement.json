@@ -4,7 +4,6 @@
   "is_standard": "Yes",
   "report_type": "Script Report",
   "module": "Accounts",
-  "workspace": "Selling",
   "filters": [
     {
       "fieldname": "customer",
@@ -89,12 +88,5 @@
       "fieldtype": "Currency",
       "width": 120
     }
-  ],
-  "shortcut": {
-    "type": "Report",
-    "label": "Customer Statement",
-    "name": "Customer Statement",
-    "doctype": "GL Entry",
-    "is_query_report": true
-  }
+  ]
 }
