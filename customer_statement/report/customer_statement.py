@@ -1,29 +1,25 @@
 import frappe
 from frappe.utils import nowdate, getdate, flt, escape
+from frappe import _
 
 # --- Core Logic Function ---
 
 @frappe.whitelist()
 def get_customer_statement(customer, from_date=None, to_date=None):
-    """Return a dict with customer statement details for use in client scripts or print formats."""
+    """Calculates all statement details (transactions, balances, aging) for a customer."""
     
-    # 1. Date Handling (Safety checks)
-    if not from_date:
-        from_date = "2000-01-01"
-    if not to_date:
-        to_date = nowdate()
+    # 1. Date Handling
+    # Safely convert dates
+    from_date = getdate(from_date or "2000-01-01")
+    to_date = getdate(to_date or nowdate())
 
-    from_date = getdate(from_date)
-    to_date = getdate(to_date)
-
-    # Use try-except to safely handle cases where the Customer might not exist
     try:
         customer_doc = frappe.get_doc("Customer", customer)
     except frappe.DoesNotExistError:
         frappe.throw(f"Customer {customer} not found.")
         return {}
 
-    # 2. Opening Balance Calculation
+    # 2. Opening Balance Calculation (All transactions before the start date)
     opening_balance_tuple = frappe.db.sql("""
         SELECT SUM(debit) - SUM(credit)
         FROM `tabGL Entry`
@@ -35,14 +31,18 @@ def get_customer_statement(customer, from_date=None, to_date=None):
     opening_balance = flt(opening_balance_tuple[0][0])
     
     running_balance = opening_balance
+    
+    # Add the Balance Forward row
     rows = [{
         "date": from_date,
-        "description": "Balance Forward",
-        "amount": 0,  # Amount is 0 for Balance Forward row, balance field holds the value
-        "balance": running_balance
+        "description": _("Balance Forward"),
+        "amount": 0,  
+        "balance": running_balance,
+        "voucher_type": "",
+        "voucher_no": ""
     }]
 
-    # 3. GL Entries
+    # 3. GL Entries (Transactions within the date range)
     gl_entries = frappe.db.get_list(
         "GL Entry",
         filters={
@@ -55,28 +55,27 @@ def get_customer_statement(customer, from_date=None, to_date=None):
     )
 
     for entry in gl_entries:
+        # Calculate the change in balance for this entry
         amount = flt(entry.debit) - flt(entry.credit)
         running_balance += amount
         
-        # Use a helper function (defined below)
+        # Use helper function (defined below)
         desc = build_description(entry) 
         
         rows.append({
             "date": entry.posting_date,
             "description": desc,
-            # Amount field represents the change (debit - credit)
             "amount": amount, 
             "balance": running_balance,
-            "voucher_type": entry.voucher_type, # Added for Print Format use
-            "voucher_no": entry.voucher_no       # Added for Print Format use
+            "voucher_type": entry.voucher_type,
+            "voucher_no": entry.voucher_no
         })
     
     # Use helper functions (defined below)
     aging = calculate_aging(customer, to_date)
     
     # 4. Final Data Structure (Passed to the Print Format)
-    # The dictionary returned here is what your Jinja Print Format will access via `data[0]`
-    final_data = {
+    return {
         "customer": {
             "name": customer_doc.name,
             "customer_name": customer_doc.customer_name,
@@ -90,29 +89,28 @@ def get_customer_statement(customer, from_date=None, to_date=None):
         "statement_no": frappe.generate_hash(length=6),
         "statement_date": nowdate(),
     }
-    
-    return final_data
 
 
-# --- Standard Report Entry Point ---
+# --- Standard Report Entry Point (Execute) ---
 
 def execute(filters=None):
     """Standard entry point for Frappe Script Reports. Returns (columns, data)."""
     
-    # Safely retrieve filters
+    # CRITICAL FIX: Use 'start_date' and 'end_date' as defined in the JSON file
     customer = filters.get("customer")
-    # Assuming your report's JSON filter fields are named 'customer', 'from_date', 'to_date'
-    from_date = filters.get("from_date") 
-    to_date = filters.get("to_date")
+    from_date = filters.get("start_date") 
+    to_date = filters.get("end_date")
     
     if not customer:
+        # Ensures the report cannot run without the required filter
         frappe.throw(_("Please select a Customer."))
 
     # 1. Call the core logic function
-    # The result is the final_data dictionary
+    # full_data now contains the complete dictionary (customer, rows, summary, etc.)
     full_data = get_customer_statement(customer, from_date, to_date)
 
     # 2. Define Columns for the report grid (what the user sees on screen)
+    # This must match your JSON file's "columns" array.
     columns = [
         {"label": _("Date"), "fieldname": "date", "fieldtype": "Date", "width": 100},
         {"label": _("Description"), "fieldname": "description", "fieldtype": "Data", "width": 250},
@@ -120,28 +118,29 @@ def execute(filters=None):
         {"label": _("Balance"), "fieldname": "balance", "fieldtype": "Currency", "width": 120},
     ]
 
-    # 3. FIX: Return columns and the list of transaction rows
+    # 3. Return columns and the list of transaction rows
     # The Print Format will receive the full_data structure as `data[0]`
     return columns, full_data["rows"]
 
 
-# --- Helper Functions (Ensure these are defined in your file) ---
+# --- Helper Functions --------------------------------------------------------------------
 
 def build_description(entry):
     """Generates a user-friendly description for the GL Entry."""
     vt = entry.voucher_type
     vn = entry.voucher_no
     
-    # Add logic to make the description specific based on voucher type
+    # Default description
+    desc = f"{vt} #{vn}"
+    
     if vt == "Sales Invoice":
-        return f"Invoice #{vn}"
+        desc = f"Invoice #{vn}"
     elif vt == "Payment Entry":
-        return f"Payment #{vn}"
-    elif vt in ["Credit Note", "Journal Entry"] and entry.credit > entry.debit:
-        return f"Credit Memo #{vn}"
-    else:
-        # Default to remarks if available, or just the voucher info
-        return entry.remarks or f"{vt} #{vn}"
+        desc = f"Payment #{vn}"
+    elif vt == "Journal Entry" and entry.remarks:
+        desc = entry.remarks 
+    
+    return desc
 
 
 def get_customer_address(customer):
@@ -154,7 +153,6 @@ def get_customer_address(customer):
     if not link:
         return {}
     
-    # Only fetch and return relevant address fields for printing
     addr = frappe.get_doc("Address", link)
     return {
         "address_line1": addr.address_line1,
@@ -169,7 +167,8 @@ def get_customer_address(customer):
 def calculate_aging(customer, as_of_date):
     """Calculates the current aging buckets for outstanding invoices."""
     today = getdate(as_of_date)
-    buckets = {"current": 0, "1_30": 0, "31_60": 0, "61_90": 0, "over_90": 0, "total_due": 0}
+    # Keys must match the fieldnames defined in your JSON summary_columns
+    buckets = {"current": 0, "1_30": 0, "31_60": 0, "61_90": 0, "over_90": 0, "total_due": 0} 
 
     invoices = frappe.db.get_list(
         "Sales Invoice",
@@ -181,7 +180,7 @@ def calculate_aging(customer, as_of_date):
         days = (today - inv.posting_date).days
         amt = flt(inv.outstanding_amount)
         
-        # Calculate aging based on days past due (assuming terms are 0 days)
+        # Calculate aging based on days past due (assuming 0-day terms for simplicity)
         if days <= 0:
             buckets["current"] += amt
         elif days <= 30:
