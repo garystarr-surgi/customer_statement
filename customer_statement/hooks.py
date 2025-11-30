@@ -9,18 +9,17 @@ app_color = "grey"
 app_email = "gary.starr@surgishop.com"
 app_license = "MIT"
 
-# --- Report Registration (REQUIRED FIX) ---
-# This hook tells Frappe to look in the 'report' folder for a report named 'customer_statement'
+# --- Report Registration (MANDATORY for report to appear) ---
 app_reports = [
     "customer_statement" 
 ]
-# ------------------------------------------
 
-# Client scripts - loaded on all pages
-# This will load the JavaScript file directly
+# --- Client Script Registration (FIXED PATH) ---
+# This forces the browser to look in the standard built asset path
 app_include_js = [
-    "customer_statement/public/js/customer_statement_client.js"
+    "/assets/customer_statement/js/customer_statement_client.js"
 ]
+# -------------------------------------------------------------
 
 # Fixtures - Workspaces (for report link in workspace)
 fixtures = [
