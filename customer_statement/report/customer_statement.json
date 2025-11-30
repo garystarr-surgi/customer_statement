@@ -1,111 +1,111 @@
 {
- "add_total_row": 0,
- "columns": [
-  {
-   "label": "Date",
-   "fieldname": "date",
-   "fieldtype": "Date",
-   "width": 100
-  },
-  {
-   "label": "Description",
-   "fieldname": "description",
-   "fieldtype": "Data",
-   "width": 250
-  },
-  {
-   "label": "Amount",
-   "fieldname": "amount",
-   "fieldtype": "Currency",
-   "width": 120
-  },
-  {
-   "label": "Balance",
-   "fieldname": "balance",
-   "fieldtype": "Currency",
-   "width": 120
-  }
- ],
- "creation": "2025-11-28 10:00:00.000000",
- "docstatus": 0,
- "doctype": "Report",
- "filters": [
-  {
-   "fieldname": "customer",
-   "label": "Customer",
-   "fieldtype": "Link",
-   "options": "Customer",
-   "reqd": 1
-  },
-  {
-   "fieldname": "start_date",
-   "label": "Start Date",
-   "fieldtype": "Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "end_date",
-   "label": "End Date",
-   "fieldtype": "Date",
-   "reqd": 1
-  }
- ],
- "idx": 0,
- "is_standard": "Yes",
- "modified": "2025-11-28 10:00:00.000000",
- "modified_by": "Administrator",
- "module": "Accounts",
- "name": "Customer Statement",
- "owner": "Administrator",
- "ref_doctype": "GL Entry",
- "report_name": "Customer Statement",
- "report_type": "Script Report",
- "roles": [
-  {
-   "role": "Accounts User"
-  },
-  {
-   "role": "Accounts Manager"
-  }
- ],
- "script": "customer_statement.report.customer_statement",
- "set_user_permissions": "For Value",
- "summary_columns": [
-  {
-   "label": "Current Due",
-   "fieldname": "current",
-   "fieldtype": "Currency",
-   "width": 120
-  },
-  {
-   "label": "1-30 Days Past Due",
-   "fieldname": "1_30",
-   "fieldtype": "Currency",
-   "width": 120
-  },
-  {
-   "label": "31-60 Days Past Due",
-   "fieldname": "31_60",
-   "fieldtype": "Currency",
-   "width": 120
-  },
-  {
-   "label": "61-90 Days Past Due",
-   "fieldname": "61_90",
-   "fieldtype": "Currency",
-   "width": 120
-  },
-  {
-   "label": "90+ Days Past Due",
-   "fieldname": "over_90",
-   "fieldtype": "Currency",
-   "width": 120
-  },
-  {
-   "label": "Total Due",
-   "fieldname": "total_due",
-   "fieldtype": "Currency",
-   "width": 120
-  }
- ]
+  "add_total_row": 0,
+  "columns": [
+    {
+      "label": "Date",
+      "fieldname": "date",
+      "fieldtype": "Date",
+      "width": 100
+    },
+    {
+      "label": "Description",
+      "fieldname": "description",
+      "fieldtype": "Data",
+      "width": 250
+    },
+    {
+      "label": "Amount",
+      "fieldname": "amount",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "Balance",
+      "fieldname": "balance",
+      "fieldtype": "Currency",
+      "width": 120
+    }
+  ],
+  "creation": "2025-11-28 10:00:00.000000",
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [
+    {
+      "fieldname": "customer",
+      "label": "Customer",
+      "fieldtype": "Link",
+      "options": "Customer",
+      "reqd": 1
+    },
+    {
+      "fieldname": "start_date",
+      "label": "Start Date",
+      "fieldtype": "Date",
+      "reqd": 1
+    },
+    {
+      "fieldname": "end_date",
+      "label": "End Date",
+      "fieldtype": "Date",
+      "reqd": 1
+    }
+  ],
+  "idx": 0,
+  "is_standard": "Yes",
+  "modified": "2025-11-28 10:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Accounts",
+  "name": "Customer Statement",
+  "owner": "Administrator",
+  "ref_doctype": "GL Entry",
+  "report_name": "Customer Statement",
+  "report_type": "Script Report",
+  "roles": [
+    {
+      "role": "Accounts User"
+    },
+    {
+      "role": "Accounts Manager"
+    }
+  ],
+  "script": "customer_statement.report.customer_statement",
+  "set_user_permissions": "For Value",
+  "summary_columns": [
+    {
+      "label": "Current Due",
+      "fieldname": "current",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "1-30 Days Past Due",
+      "fieldname": "1_30",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "31-60 Days Past Due",
+      "fieldname": "31_60",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "61-90 Days Past Due",
+      "fieldname": "61_90",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "90+ Days Past Due",
+      "fieldname": "over_90",
+      "fieldtype": "Currency",
+      "width": 120
+    },
+    {
+      "label": "Total Due",
+      "fieldname": "total_due",
+      "fieldtype": "Currency",
+      "width": 120
+    }
+  ]
 }
