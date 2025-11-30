@@ -9,7 +9,7 @@ app_email = "gary.starr@surgishop.com"
 app_license = "MIT"
 
 # --- Client Script Registration ---
-# This forces the browser to look in the standard built asset path
+# This includes your client-side JS globally
 app_include_js = [
     "/assets/customer_statement/js/customer_statement_client.js"
 ]
