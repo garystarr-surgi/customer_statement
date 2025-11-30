@@ -6,12 +6,13 @@ from frappe import _
 
 @frappe.whitelist()
 def get_customer_statement(customer, from_date=None, to_date=None):
-    """Calculates all statement details (transactions, balances) for a customer."""
+    """Calculates statement details (transactions, balances) for a customer."""
 
     # 1. Date Handling
     from_date = getdate(from_date or "2000-01-01")
     to_date = getdate(to_date or nowdate())
 
+    # Ensure customer exists
     try:
         customer_doc = frappe.get_doc("Customer", customer)
     except frappe.DoesNotExistError:
@@ -97,7 +98,7 @@ def execute(filters=None):
 
     # Guard: ensure customer is a string, not dict
     if isinstance(customer, dict):
-        customer = customer.get("name")
+        customer = customer.get("name") or customer.get("value") or customer.get("label")
 
     full_data = get_customer_statement(customer, from_date, to_date)
 
@@ -136,7 +137,7 @@ def get_customer_address(customer):
         {"link_doctype": "Customer", "link_name": customer, "parenttype": "Address"},
         "parent",
     )
-    if not link:
+    if not link or not isinstance(link, str):
         return {}
 
     addr = frappe.get_doc("Address", link)
