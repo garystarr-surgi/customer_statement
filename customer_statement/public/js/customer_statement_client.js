@@ -1,6 +1,6 @@
 frappe.ui.form.on('Customer', {
     refresh: function(frm) {
-        // Only show the button if the document is saved (not new)
+        // Show the button only if the Customer record is saved
         if (!frm.is_new()) {
 
             // Add the 'Statement' button under the 'View Report' group
