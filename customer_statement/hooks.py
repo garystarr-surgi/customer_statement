@@ -9,6 +9,13 @@ app_color = "grey"
 app_email = "gary.starr@surgishop.com"
 app_license = "MIT"
 
+# --- Report Registration (REQUIRED FIX) ---
+# This hook tells Frappe to look in the 'report' folder for a report named 'customer_statement'
+app_reports = [
+    "customer_statement" 
+]
+# ------------------------------------------
+
 # Client scripts - loaded on all pages
 # This will load the JavaScript file directly
 app_include_js = [
