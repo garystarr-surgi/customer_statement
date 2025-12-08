@@ -16,11 +16,11 @@ app_include_js = [
 
 # --- Fixtures ---
 # Export workspace so the report link appears in Accounting workspace
-fixtures = [
-    {
-        "doctype": "Workspace",
-        "filters": {
-            "name": "Accounting"
-        }
-    }
-]
+# fixtures = [
+ #   {
+ #       "doctype": "Workspace",
+ #       "filters": {
+  #          "name": "Accounting"
+  #      }
+  #  }
+#]
